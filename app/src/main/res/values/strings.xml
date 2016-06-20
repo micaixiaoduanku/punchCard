@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">每日打卡</string>
+    <string name="bottom_action_bar_task">今日目标</string>
+    <string name="bottom_action_bar_friend">朋友</string>
+    <string name="bottom_action_bar_world">发现</string>
+    <string name="bottom_action_bar_mine">我的</string>
+    <string name="task_title">今日打卡任务</string>
+    <string name="punchcard">打卡</string>
+    <string name="processbartips">完成进度</string>
+</resources>
