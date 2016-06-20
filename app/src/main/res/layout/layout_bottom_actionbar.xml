@@ -19,6 +19,7 @@
             android:src="@mipmap/ic_event_note_black_36dp"/>
         <TextView
             android:layout_below="@+id/iv_tasks"
+            android:textColor="@color/black"
             android:text="@string/bottom_action_bar_task"
             android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
@@ -41,6 +42,7 @@
         <TextView
             android:layout_below="@+id/iv_people"
             android:text="@string/bottom_action_bar_friend"
+            android:textColor="@color/black"
             android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
@@ -61,6 +63,7 @@
         <TextView
             android:layout_below="@+id/iv_cycle"
             android:text="@string/bottom_action_bar_world"
+            android:textColor="@color/black"
             android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
@@ -82,6 +85,7 @@
         <TextView
             android:layout_below="@+id/iv_mine"
             android:text="@string/bottom_action_bar_mine"
+            android:textColor="@color/black"
             android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>

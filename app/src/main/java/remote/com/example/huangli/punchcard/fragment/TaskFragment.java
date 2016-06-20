@@ -8,24 +8,39 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ListView;
+import android.widget.CompoundButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import remote.com.example.huangli.punchcard.R;
+import remote.com.example.huangli.punchcard.ctviews.ListViewForScrollView;
+import remote.com.example.huangli.punchcard.model.Task;
+import remote.com.example.huangli.punchcard.utils.ToastUtils;
 
 /**
  * Created by huangli on 16/6/19.
  */
 public class TaskFragment extends Fragment{
-    private ListView listView;
+    private ListViewForScrollView listView;
+    private ProgressBar progressBar;
+    private Button btnPunch;
+    private TextView tvProgress;
     private ItemListviewTaskAdapter itemListviewTaskAdapter;
+    private List<Task> tasks = new ArrayList<>();
     public static TaskFragment newInstance() {
         TaskFragment fragment = new TaskFragment();
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        loadData();
     }
 
     @Nullable
@@ -33,31 +48,44 @@ public class TaskFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_task, container, false);
         findviews(view);
+        setListeners();
         initUi();
         return view;
+    }
+
+    private void setListeners() {
+        btnPunch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (Task task : tasks){
+                    if (!task.isComplated){
+                        ToastUtils.showShortToast(getActivity(),R.string.toast_no_allow);
+                        return;
+                    }
+                }
+                ToastUtils.showShortToast(getActivity(),R.string.toast_task_complated);
+            }
+        });
+    }
+
+
+    private void loadData(){
+        tasks.add(new Task("记忆30个单词",false));
+        tasks.add(new Task("进行有氧训练一个小时",false));
+        tasks.add(new Task("进行打卡app开发",false));
     }
 
     private void initUi() {
         itemListviewTaskAdapter = new ItemListviewTaskAdapter(getActivity());
         listView.setAdapter(itemListviewTaskAdapter);
-        List<Task> objects = new ArrayList<>();
-        objects.add(new Task("记忆30个单词",false));
-        objects.add(new Task("进行有氧训练一个小时",false));
-        objects.add(new Task("进行打卡app开发",false));
-        itemListviewTaskAdapter.setData(objects);
+        itemListviewTaskAdapter.setData(tasks);
     }
 
     private void findviews(View view){
-        listView = (ListView)view.findViewById(R.id.listview_tasks);
-    }
-
-    private class Task{
-        public String describe;
-        public boolean isComplated;
-        public Task(String describe,boolean isComplated){
-            this.describe = describe;
-            this.isComplated = isComplated;
-        }
+        listView = (ListViewForScrollView)view.findViewById(R.id.listview_tasks);
+        progressBar = (ProgressBar)view.findViewById(R.id.progress_horizontal);
+        btnPunch = (Button)view.findViewById(R.id.btn_punchcard);
+        tvProgress = (TextView)view.findViewById(R.id.tv_progress);
     }
 
     class ItemListviewTaskAdapter extends BaseAdapter {
@@ -101,10 +129,25 @@ public class TaskFragment extends Fragment{
             return convertView;
         }
 
-        private void initializeViews(Task object, ViewHolder holder) {
+        private void initializeViews(final Task object, ViewHolder holder) {
             //TODO implement
             holder.tvTask.setText(object.describe);
             holder.checkbox.setChecked(object.isComplated);
+            holder.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    object.isComplated = isChecked;
+                    int i = 0;
+                    for (Task task : objects){
+                        if (task.isComplated){
+                            i++;
+                        }
+                    }
+                    int progress = (int) (100*((float)i/(float)objects.size()));
+                    tvProgress.setText(progress+"%");
+                    progressBar.setProgress(progress);
+                }
+            });
         }
 
         protected class ViewHolder {

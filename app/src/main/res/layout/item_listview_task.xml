@@ -4,10 +4,12 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content">
     <RelativeLayout
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="60dip">
     <TextView
         android:id="@+id/tv_task"
+        android:textColor="@color/black"
         android:textSize="15dip"
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dip"
