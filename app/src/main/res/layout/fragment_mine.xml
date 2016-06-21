@@ -18,6 +18,7 @@
                 <LinearLayout
                     android:id="@+id/layout_infomation"
                     android:layout_toRightOf="@+id/portrait"
+                    android:layout_marginRight="10dip"
                     android:layout_centerVertical="true"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
