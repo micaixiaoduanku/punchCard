@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">每日打卡</string>
+
+    <string name="label_activity_plan">当前计划列表</string>
+    <string name="label_activity_make_new_plan">新的计划</string>
+    <string name="label_activity_add_new_task">新的任务</string>
+
     <string name="bottom_action_bar_task">今日目标</string>
     <string name="bottom_action_bar_friend">朋友</string>
     <string name="bottom_action_bar_world">发现</string>
@@ -14,4 +19,16 @@
     <string name="user_info_lv">等级 : 12</string>
     <string name="user_info_progress">完成进度 : 19%</string>
     <string name="user_info_sign">签名 : 人之所以快乐,不是因为得到的多,而是因为计较得少</string>
+
+    <string name="day1">星期一</string>
+    <string name="day2">星期二</string>
+    <string name="day3">星期三</string>
+    <string name="day4">星期四</string>
+    <string name="day5">星期五</string>
+    <string name="day6">星期六</string>
+    <string name="day7">星期日</string>
+    <string name="day_all">全选</string>
+    <string name="btn_text_cancel">取消</string>
+    <string name="btn_text_ok">保存</string>
+
 </resources>

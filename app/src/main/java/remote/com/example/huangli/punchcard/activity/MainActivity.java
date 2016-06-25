@@ -14,7 +14,7 @@ import remote.com.example.huangli.punchcard.fragment.MineFragment;
 import remote.com.example.huangli.punchcard.fragment.TaskFragment;
 import remote.com.example.huangli.punchcard.fragment.WorldFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     private BottomActionBar bottomActionBar;
     private ViewPager viewPager;
     private SectionsPagerAdapter mSectionsPagerAdapter;
