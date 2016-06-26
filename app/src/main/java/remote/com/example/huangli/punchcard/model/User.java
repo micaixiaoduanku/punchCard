@@ -15,6 +15,7 @@ public class User {
     private int totalProgress;
     private List<Plan> plens = new ArrayList<>();
     private static User user;
+    private int curPlanIndex = 0;
 
     public static User getInstance(){
         if (user == null){
@@ -25,6 +26,22 @@ public class User {
 
     private User(){
 
+    }
+
+    public Plan getCurPlan(){
+        if (curPlanIndex < plens.size()){
+            return plens.get(curPlanIndex);
+        }else {
+            return null;
+        }
+    }
+
+    public int getCurPlanIndex() {
+        return curPlanIndex;
+    }
+
+    public void setCurPlanIndex(int curPlan) {
+        this.curPlanIndex = curPlan;
     }
 
     public List<Plan> getPlens(){
@@ -80,6 +97,6 @@ public class User {
     }
 
     public void addPlan(Plan plan){
-        plens.add(plan);
+        plens.add(0,plan);
     }
 }

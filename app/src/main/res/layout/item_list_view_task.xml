@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="100dip"
+                android:orientation="vertical"
+                android:padding="10dip">
+
+    <LinearLayout
+        android:id="@+id/layout1"
+        android:layout_width="260dip"
+        android:layout_height="100dip"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_describe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="每天背30个单词"
+            android:textColor="@color/black"/>
+        <TextView
+            android:layout_marginTop="10dip"
+            android:id="@+id/tv_reminddays"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="提醒日 : 星期一,星期四,星期五,星期六"
+            android:textColor="@color/black"/>
+    </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/layout_modify_btn"
+        android:layout_toRightOf="@+id/layout1"
+        android:layout_width="match_parent"
+        android:layout_height="100dip">
+        <TextView
+            android:id="@+id/tv_edit"
+            android:textColor="@color/black"
+            android:text="修改"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+    <ImageView
+        android:background="@color/black"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+</RelativeLayout>

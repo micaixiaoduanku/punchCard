@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import remote.com.example.huangli.punchcard.R;
+import remote.com.example.huangli.punchcard.model.Plan;
 
 /**
  * Created by huangli on 16/6/23.
@@ -32,13 +33,22 @@ public class NewPlanActivity extends BaseActivity implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.layout_btn_week:
-                startActivity(new Intent(this,EditPlanActivity.class));
+                Intent intent1 = new Intent(this,EditPlanActivity.class);
+                intent1.putExtra("type", Plan.TYPE_WEEK);
+                startActivity(intent1);
+                finish();
                 break;
             case R.id.layout_btn_month:
-                startActivity(new Intent(this,EditPlanActivity.class));
+                Intent intent2 = new Intent(this,EditPlanActivity.class);
+                intent2.putExtra("type", Plan.TYPE_MONTH);
+                startActivity(intent2);
+                finish();
                 break;
             case R.id.layout_btn_100days:
-                startActivity(new Intent(this,EditPlanActivity.class));
+                Intent intent3 = new Intent(this,EditPlanActivity.class);
+                intent3.putExtra("type", Plan.TYPE_100_DAYS);
+                startActivity(intent3);
+                finish();
                 break;
         }
     }

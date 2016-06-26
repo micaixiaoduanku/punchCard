@@ -1,11 +1,13 @@
 package remote.com.example.huangli.punchcard.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
 import remote.com.example.huangli.punchcard.R;
 import remote.com.example.huangli.punchcard.ctviews.ItemLayoutCbDay;
+import remote.com.example.huangli.punchcard.utils.ToastUtils;
 
 /**
  * Created by huangli on 16/6/25.
@@ -25,6 +27,40 @@ public class AddTaskActivity extends BaseActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_task);
         initUi();
+        praseIntent(getIntent());
+    }
+
+    private void praseIntent(Intent intent){
+        if (intent == null){
+            return;
+        }
+        String describe = intent.getStringExtra(EditPlanActivity.BUNDLE_KEY_DESCRIBE);
+        int[] days = intent.getIntArrayExtra(EditPlanActivity.BUNDLE_KEY_DAYS);
+        if (describe != null && days != null && days.length >= 7){
+            getEditTask().setText(describe);
+            getEditTask().setSelection(getEditTask().getText().toString().length());
+            if (days[0] == 1){
+                cbLayout1.setChecked(true);
+            }
+            if (days[1] == 1){
+                cbLayout2.setChecked(true);
+            }
+            if (days[2] == 1){
+                cbLayout3.setChecked(true);
+            }
+            if (days[3] == 1){
+                cbLayout4.setChecked(true);
+            }
+            if (days[4] == 1){
+                cbLayout5.setChecked(true);
+            }
+            if (days[5] == 1){
+                cbLayout6.setChecked(true);
+            }
+            if (days[6] == 1){
+                cbLayout7.setChecked(true);
+            }
+        }
     }
 
     private void initUi(){
@@ -72,7 +108,37 @@ public class AddTaskActivity extends BaseActivity implements View.OnClickListene
                 break;
             case R.id.btn_ok:
                 //TODO implement
+                if (isFormatOk()){
+                    setResult(RESULT_OK,getResultIntent());
+                    finish();
+                }
                 break;
         }
+    }
+
+
+    private boolean isFormatOk(){
+        if (!cbLayout1.isChecked() && !cbLayout2.isChecked()
+                && !cbLayout3.isChecked() && !cbLayout4.isChecked()
+                && !cbLayout5.isChecked() && !cbLayout6.isChecked()
+                && !cbLayout7.isChecked()){
+            ToastUtils.showShortToast(this,R.string.toast_format_error_days_choice);
+            return false;
+        }
+        if (getEditTask().getText().toString().equals("")){
+            ToastUtils.showShortToast(this,R.string.toast_format_error_edit_task);
+            return false;
+        }
+        return true;
+    }
+
+
+    private Intent getResultIntent(){
+        Intent intent = new Intent();
+        intent.putExtra(EditPlanActivity.BUNDLE_KEY_DESCRIBE,getEditTask().getText().toString());
+        int[] days = new int[]{cbLayout1.isChecked()?1:0,cbLayout2.isChecked()?1:0,cbLayout3.isChecked()?1:0,cbLayout4.isChecked()?1:0,cbLayout5.isChecked()?1:0,
+                cbLayout6.isChecked()?1:0,cbLayout7.isChecked()?1:0};
+        intent.putExtra(EditPlanActivity.BUNDLE_KEY_DAYS,days);
+        return intent;
     }
 }

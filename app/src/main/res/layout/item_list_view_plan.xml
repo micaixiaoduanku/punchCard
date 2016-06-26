@@ -4,7 +4,10 @@
                 android:layout_height="200dip"
                 android:orientation="vertical"
                 android:padding="10dip">
-
+    <RelativeLayout
+        android:id="@+id/layout1"
+        android:layout_width="300dip"
+        android:layout_height="200dip">
     <TextView
         android:id="@+id/tv_type"
         android:layout_width="wrap_content"
@@ -20,4 +23,31 @@
         android:layout_height="wrap_content"
         android:text="描述 : 在这段时间里,我要每天背30个单词,跑步1个小时"
         android:textColor="@color/black"/>
+        <TextView
+            android:layout_marginTop="5dip"
+            android:textColor="@color/black"
+            android:gravity="center|left"
+            android:text="任务一:背单词30个\n任务二:有氧训练1个小时\n任务三:饮食清淡"
+            android:layout_below="@+id/tv_describe"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/tv_tasks_centent"
+            />
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_toRightOf="@+id/layout1"
+        android:layout_width="match_parent"
+        android:layout_height="200dip">
+        <CheckBox
+            android:id="@+id/checkbox"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+    <ImageView
+        android:layout_alignParentBottom="true"
+        android:background="@color/black"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
 </RelativeLayout>

@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -20,6 +21,7 @@ import java.util.List;
 import remote.com.example.huangli.punchcard.R;
 import remote.com.example.huangli.punchcard.ctviews.ListViewForScrollView;
 import remote.com.example.huangli.punchcard.model.Task;
+import remote.com.example.huangli.punchcard.model.User;
 import remote.com.example.huangli.punchcard.utils.ToastUtils;
 
 /**
@@ -31,7 +33,6 @@ public class TaskFragment extends Fragment{
     private Button btnPunch;
     private TextView tvProgress;
     private ItemListviewTaskAdapter itemListviewTaskAdapter;
-    private List<Task> tasks = new ArrayList<>();
     public static TaskFragment newInstance() {
         TaskFragment fragment = new TaskFragment();
         return fragment;
@@ -40,7 +41,6 @@ public class TaskFragment extends Fragment{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loadData();
     }
 
     @Nullable
@@ -57,8 +57,8 @@ public class TaskFragment extends Fragment{
         btnPunch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (Task task : tasks){
-                    if (!task.isComplated){
+                for (Task task : User.getInstance().getCurPlan().getTasks()){
+                    if (!task.isComplated()){
                         ToastUtils.showShortToast(getActivity(),R.string.toast_no_allow);
                         return;
                     }
@@ -66,19 +66,26 @@ public class TaskFragment extends Fragment{
                 ToastUtils.showShortToast(getActivity(),R.string.toast_task_complated);
             }
         });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                boolean isChecked = ((CheckBox)view.findViewById(R.id.checkbox)).isChecked();
+                ((CheckBox)view.findViewById(R.id.checkbox)).setChecked(!isChecked);
+                User.getInstance().getCurPlan().getTasks().get(position).setComplated(!isChecked);
+            }
+        });
     }
 
-
-    private void loadData(){
-        tasks.add(new Task("记忆30个单词",false));
-        tasks.add(new Task("进行有氧训练一个小时",false));
-        tasks.add(new Task("进行打卡app开发",false));
+    @Override
+    public void onResume() {
+        super.onResume();
+        itemListviewTaskAdapter.notifyDataSetChanged();
     }
 
     private void initUi() {
         itemListviewTaskAdapter = new ItemListviewTaskAdapter(getActivity());
         listView.setAdapter(itemListviewTaskAdapter);
-        itemListviewTaskAdapter.setData(tasks);
+        itemListviewTaskAdapter.setData(User.getInstance().getCurPlan().getTasks());
     }
 
     private void findviews(View view){
@@ -125,21 +132,21 @@ public class TaskFragment extends Fragment{
                 convertView = layoutInflater.inflate(R.layout.item_listview_task, null);
                 convertView.setTag(new ViewHolder(convertView));
             }
-            initializeViews((Task)getItem(position), (ViewHolder) convertView.getTag());
+            initializeViews(position,(Task)getItem(position), (ViewHolder) convertView.getTag());
             return convertView;
         }
 
-        private void initializeViews(final Task object, ViewHolder holder) {
+        private void initializeViews(int position,final Task object, ViewHolder holder) {
             //TODO implement
-            holder.tvTask.setText(object.describe);
-            holder.checkbox.setChecked(object.isComplated);
+            holder.tvTask.setText(getString(R.string.task_tips)+(position+1)+" : "+object.getDescribe());
+            holder.checkbox.setChecked(object.isComplated());
             holder.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    object.isComplated = isChecked;
+                    object.setComplated(isChecked);
                     int i = 0;
                     for (Task task : objects){
-                        if (task.isComplated){
+                        if (task.isComplated()){
                             i++;
                         }
                     }
@@ -157,6 +164,8 @@ public class TaskFragment extends Fragment{
             public ViewHolder(View view) {
                 tvTask = (TextView) view.findViewById(R.id.tv_task);
                 checkbox = (CheckBox) view.findViewById(R.id.checkbox);
+                checkbox.setClickable(false);
+                checkbox.setFocusable(false);
             }
         }
     }

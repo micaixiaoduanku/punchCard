@@ -8,22 +8,47 @@ import java.util.List;
  */
 public class Plan {
 
-    public static int TYPE_100_DAYS = 0;
-    public static int TYPE_MONTH = 1;
-    public static int TYPE_WEEK = 2;
+    public final static int TYPE_100_DAYS = 0;
+    public final static int TYPE_MONTH = 1;
+    public final static int TYPE_WEEK = 2;
 
     private int type;
-    private String name;
+    private String describe;
     private List<Task> tasks = new ArrayList<>();
 
-    public Plan(int type,String name){
+    public Plan(int type,String describe){
         this.type = type;
-        this.name = name;
+        this.describe = describe;
         tasks = new ArrayList<>();
     }
 
+    public Plan(int type){
+        this.type = type;
+        tasks = new ArrayList<>();
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getDescribe() {
+        return describe;
+    }
+
+    public void setDescribe(String describe) {
+        this.describe = describe;
+    }
+
+    public List<Task> getTasks(){
+        return tasks;
+    }
+
     public void addTask(Task task){
-        tasks.add(task);
+        tasks.add(0,task);
     }
 
     public void removeTask(){

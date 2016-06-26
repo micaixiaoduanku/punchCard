@@ -15,10 +15,10 @@
     <string name="toast_no_allow">任务还没有完成,不能打卡</string>
     <string name="toast_task_complated">恭喜你,今天任务完成!</string>
     <string name="task_edit_tips">备注:</string>
-    <string name="user_info_nick">昵称 : 阿文</string>
-    <string name="user_info_lv">等级 : 12</string>
-    <string name="user_info_progress">完成进度 : 19%</string>
-    <string name="user_info_sign">签名 : 人之所以快乐,不是因为得到的多,而是因为计较得少</string>
+    <string name="user_info_nick">昵称:</string>
+    <string name="user_info_lv">等级:</string>
+    <string name="user_info_progress">完成进度:</string>
+    <string name="user_info_sign">签名:</string>
 
     <string name="day1">星期一</string>
     <string name="day2">星期二</string>
@@ -30,5 +30,17 @@
     <string name="day_all">全选</string>
     <string name="btn_text_cancel">取消</string>
     <string name="btn_text_ok">保存</string>
+
+    <string name="type_plan_100days">百日计划</string>
+    <string name="type_plan_month">月计划</string>
+    <string name="type_plan_week">周计划</string>
+
+    <string name="task_tips">任务</string>
+    <string name="remind_tips">提醒日:</string>
+    <string name="remind_every_day">每天提醒</string>
+
+    <string name="toast_format_error_days_choice">请最少选择一个提醒日</string>
+    <string name="toast_format_error_edit_task">请描述一下你的任务吧</string>
+    <string name="toast_format_error_edit_plan">请描述一下你的计划吧</string>
 
 </resources>

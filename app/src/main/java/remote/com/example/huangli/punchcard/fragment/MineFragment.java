@@ -52,8 +52,8 @@ public class MineFragment extends Fragment implements View.OnClickListener{
 
     private void initUi() {
         tvNickName.setText(User.getInstance().getNickname());
-        tvNickLv.setText(String.valueOf(User.getInstance().getLv()));
-        tvProgress.setText(String.valueOf(User.getInstance().getCurProgress()));
+        tvNickLv.setText("LV"+String.valueOf(User.getInstance().getLv()));
+        tvProgress.setText(String.valueOf(User.getInstance().getCurProgress())+"%");
         tvSignature.setText(User.getInstance().getSignature());
     }
 

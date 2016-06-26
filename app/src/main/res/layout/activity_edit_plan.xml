@@ -1,55 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10dip"
+    >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-             >
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="10dip"
-        >
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="请描述下你的目标:"
-        android:textColor="@color/black"
-        android:textSize="20dip"/>
+            android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/ed_goal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dip"
+                >
 
-    <remote.com.example.huangli.punchcard.ctviews.ListViewForScrollView
-        android:id="@+id/listview_tasks"
-        android:layout_width="wrap_content"
-        android:layout_height="300dip"></remote.com.example.huangli.punchcard.ctviews.ListViewForScrollView>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="请描述下你的目标:"
+                    android:textColor="@color/black"
+                    android:textSize="20dip"/>
 
-    <Button
-        android:id="@+id/btn_addtask"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dip"
-        android:background="@color/black"
-        android:padding="10dip"
-        android:text="添加任务"
-        android:textColor="@color/white"
-        android:textSize="20dip"/>
+                <EditText
+                    android:id="@+id/ed_goal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <remote.com.example.huangli.punchcard.ctviews.ListViewForScrollView
+                    android:id="@+id/listview_tasks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="300dip"></remote.com.example.huangli.punchcard.ctviews.ListViewForScrollView>
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
 
     <Button
         android:id="@+id/btn_ok"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_marginTop="10dip"
         android:background="@color/black"
         android:padding="10dip"
         android:text="完成"
         android:textColor="@color/white"
         android:textSize="20dip"/>
-    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_addtask"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_ok"
+        android:layout_marginTop="10dip"
+        android:background="@color/black"
+        android:padding="10dip"
+        android:text="添加任务"
+        android:textColor="@color/white"
+        android:textSize="20dip"/>
 </RelativeLayout>
-</ScrollView>
