@@ -14,7 +14,7 @@
     <string name="processbartips">完成进度</string>
     <string name="toast_no_allow">任务还没有完成,不能打卡</string>
     <string name="toast_task_complated">恭喜你,今天任务完成!</string>
-    <string name="task_edit_tips">备注:</string>
+    <string name="task_edit_tips">这一刻的想法</string>
     <string name="user_info_nick">昵称:</string>
     <string name="user_info_lv">等级:</string>
     <string name="user_info_progress">完成进度:</string>
@@ -42,5 +42,9 @@
     <string name="toast_format_error_days_choice">请最少选择一个提醒日</string>
     <string name="toast_format_error_edit_task">请描述一下你的任务吧</string>
     <string name="toast_format_error_edit_plan">请描述一下你的计划吧</string>
+
+    <string name="share_dialog_album">相册</string>
+    <string name="share_dialog_camera">拍照</string>
+    <string name="share_dialog_cancel">取消</string>
 
 </resources>

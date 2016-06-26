@@ -1,6 +1,7 @@
 package remote.com.example.huangli.punchcard.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,28 +12,38 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ProgressBar;
+import android.widget.GridView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import remote.com.example.huangli.punchcard.R;
+import remote.com.example.huangli.punchcard.activity.SharePicsPagerActivity;
+import remote.com.example.huangli.punchcard.adpter.SharePicGridAdpter;
 import remote.com.example.huangli.punchcard.ctviews.ListViewForScrollView;
+import remote.com.example.huangli.punchcard.model.Card;
+import remote.com.example.huangli.punchcard.model.Plan;
 import remote.com.example.huangli.punchcard.model.Task;
 import remote.com.example.huangli.punchcard.model.User;
+import remote.com.example.huangli.punchcard.server.Server;
 import remote.com.example.huangli.punchcard.utils.ToastUtils;
 
 /**
  * Created by huangli on 16/6/19.
  */
 public class TaskFragment extends Fragment{
+    private final String TAG = "TaskFragment";
     private ListViewForScrollView listView;
-    private ProgressBar progressBar;
     private Button btnPunch;
-    private TextView tvProgress;
     private ItemListviewTaskAdapter itemListviewTaskAdapter;
+    public static SharePicGridAdpter sharePicGridAdpter;
+    private GridView gridView;
+
+    public static final int REQUEST_CODE_PICK_IMAGE = 0;
+    public static final int REQUEST_CODE_CAPTURE_CAMEIA =1;
+    public static final int RESULT_DELETE_PICS = 2;
+
     public static TaskFragment newInstance() {
         TaskFragment fragment = new TaskFragment();
         return fragment;
@@ -64,6 +75,21 @@ public class TaskFragment extends Fragment{
                     }
                 }
                 ToastUtils.showShortToast(getActivity(),R.string.toast_task_complated);
+                Plan plan = User.getInstance().getCurPlan();
+                String type = "";
+                switch (plan.getType()){
+                    case Plan.TYPE_100_DAYS:
+                        type = getString(R.string.type_plan_100days);
+                        break;
+                    case Plan.TYPE_MONTH:
+                        type = getString(R.string.type_plan_month);
+                        break;
+                    case Plan.TYPE_WEEK:
+                        type = getString(R.string.type_plan_week);
+                        break;
+                }
+                Card card = new Card(User.getInstance().getNickname(),type,plan.getDescribe(),plan.getTasks());
+                Server.worldTasks.add(card);
             }
         });
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -72,6 +98,20 @@ public class TaskFragment extends Fragment{
                 boolean isChecked = ((CheckBox)view.findViewById(R.id.checkbox)).isChecked();
                 ((CheckBox)view.findViewById(R.id.checkbox)).setChecked(!isChecked);
                 User.getInstance().getCurPlan().getTasks().get(position).setComplated(!isChecked);
+            }
+        });
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //just for test
+                if (sharePicGridAdpter.getPicsSize() - 1 == position && sharePicGridAdpter.isaddBtn(position)) {
+                } else {
+                    Intent intent = new Intent(getActivity(), SharePicsPagerActivity.class);
+                    intent.putExtra("position", position);
+//                    ArrayList<PicsShare> shares = sharePrizePicGridAdpter.getContentPicsShares();
+//                    intent.putExtra("picsshares",(Serializable)shares );
+                    startActivityForResult(intent, RESULT_DELETE_PICS);
+                }
             }
         });
     }
@@ -83,6 +123,8 @@ public class TaskFragment extends Fragment{
     }
 
     private void initUi() {
+        sharePicGridAdpter = new SharePicGridAdpter(getActivity());
+        gridView.setAdapter(sharePicGridAdpter);
         itemListviewTaskAdapter = new ItemListviewTaskAdapter(getActivity());
         listView.setAdapter(itemListviewTaskAdapter);
         itemListviewTaskAdapter.setData(User.getInstance().getCurPlan().getTasks());
@@ -90,9 +132,8 @@ public class TaskFragment extends Fragment{
 
     private void findviews(View view){
         listView = (ListViewForScrollView)view.findViewById(R.id.listview_tasks);
-        progressBar = (ProgressBar)view.findViewById(R.id.progress_horizontal);
+        gridView = (GridView)view.findViewById(R.id.grid_pics);
         btnPunch = (Button)view.findViewById(R.id.btn_punchcard);
-        tvProgress = (TextView)view.findViewById(R.id.tv_progress);
     }
 
     class ItemListviewTaskAdapter extends BaseAdapter {
@@ -140,21 +181,6 @@ public class TaskFragment extends Fragment{
             //TODO implement
             holder.tvTask.setText(getString(R.string.task_tips)+(position+1)+" : "+object.getDescribe());
             holder.checkbox.setChecked(object.isComplated());
-            holder.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    object.setComplated(isChecked);
-                    int i = 0;
-                    for (Task task : objects){
-                        if (task.isComplated()){
-                            i++;
-                        }
-                    }
-                    int progress = (int) (100*((float)i/(float)objects.size()));
-                    tvProgress.setText(progress+"%");
-                    progressBar.setProgress(progress);
-                }
-            });
         }
 
         protected class ViewHolder {

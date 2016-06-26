@@ -16,10 +16,18 @@ public class Plan {
     private String describe;
     private List<Task> tasks = new ArrayList<>();
 
+    public Plan(Plan plan){
+        this.type = plan.getType();
+        this.describe = plan.getDescribe();
+        for (Task item : plan.getTasks()){
+            Task task = new Task(item.getDescribe(),item.getRemindDays(),item.isComplated());
+            this.tasks.add(task);
+        }
+    }
+
     public Plan(int type,String describe){
         this.type = type;
         this.describe = describe;
-        tasks = new ArrayList<>();
     }
 
     public Plan(int type){
