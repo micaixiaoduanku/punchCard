@@ -17,7 +17,7 @@ import java.util.List;
 import remote.com.example.huangli.punchcard.R;
 import remote.com.example.huangli.punchcard.model.Card;
 import remote.com.example.huangli.punchcard.model.Task;
-import remote.com.example.huangli.punchcard.server.Server;
+import remote.com.example.huangli.punchcard.db.DbServer;
 
 /**
  * Created by huangli on 16/6/19.
@@ -42,14 +42,14 @@ public class WorldFragment extends Fragment{
     }
 
     private void initUi() {
-        itemListCardWorldAdapter = new ItemListCardWorldAdapter(getActivity(), Server.worldTasks);
+        itemListCardWorldAdapter = new ItemListCardWorldAdapter(getActivity(), DbServer.getInstance(getActivity()).loadCardsFromDb());
         listView.setAdapter(itemListCardWorldAdapter);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        itemListCardWorldAdapter.setData(Server.worldTasks);
+        itemListCardWorldAdapter.setData(DbServer.getInstance(getActivity()).loadCardsFromDb());
     }
 
     private void findViews(View view){

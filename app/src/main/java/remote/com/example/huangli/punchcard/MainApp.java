@@ -7,9 +7,9 @@ import remote.com.example.huangli.punchcard.model.Task;
 import remote.com.example.huangli.punchcard.model.User;
 
 /**
- * Created by huangli on 16/6/25.
+ * Created by huangli on 16/6/28.
  */
-public class MainApp extends Application{
+public class MainApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();

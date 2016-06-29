@@ -1,8 +1,14 @@
 package remote.com.example.huangli.punchcard.fragment;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,30 +21,40 @@ import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import remote.com.example.huangli.punchcard.R;
 import remote.com.example.huangli.punchcard.activity.SharePicsPagerActivity;
 import remote.com.example.huangli.punchcard.adpter.SharePicGridAdpter;
+import remote.com.example.huangli.punchcard.control.PicControler;
 import remote.com.example.huangli.punchcard.ctviews.ListViewForScrollView;
+import remote.com.example.huangli.punchcard.dialog.ListDialog;
 import remote.com.example.huangli.punchcard.model.Card;
+import remote.com.example.huangli.punchcard.model.PicsShare;
 import remote.com.example.huangli.punchcard.model.Plan;
 import remote.com.example.huangli.punchcard.model.Task;
 import remote.com.example.huangli.punchcard.model.User;
-import remote.com.example.huangli.punchcard.server.Server;
+import remote.com.example.huangli.punchcard.db.DbServer;
+import remote.com.example.huangli.punchcard.utils.BitmapUtils;
+import remote.com.example.huangli.punchcard.utils.PCLog;
 import remote.com.example.huangli.punchcard.utils.ToastUtils;
 
 /**
  * Created by huangli on 16/6/19.
  */
-public class TaskFragment extends Fragment{
+public class TaskFragment extends Fragment implements PicControler.PicActionListener{
     private final String TAG = "TaskFragment";
     private ListViewForScrollView listView;
     private Button btnPunch;
     private ItemListviewTaskAdapter itemListviewTaskAdapter;
     public static SharePicGridAdpter sharePicGridAdpter;
     private GridView gridView;
+    private ListDialog listDialog;
+
+    private final int COMPRESS_SIZE_WIDTH = 720;
+    private final int COMPRESS_SIZE_HEIGHT = 1280;
 
     public static final int REQUEST_CODE_PICK_IMAGE = 0;
     public static final int REQUEST_CODE_CAPTURE_CAMEIA =1;
@@ -89,7 +105,7 @@ public class TaskFragment extends Fragment{
                         break;
                 }
                 Card card = new Card(User.getInstance().getNickname(),type,plan.getDescribe(),plan.getTasks());
-                Server.worldTasks.add(card);
+                DbServer.getInstance(getActivity()).insertCardToDb(card);
             }
         });
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -105,6 +121,7 @@ public class TaskFragment extends Fragment{
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //just for test
                 if (sharePicGridAdpter.getPicsSize() - 1 == position && sharePicGridAdpter.isaddBtn(position)) {
+                    listDialog.show();
                 } else {
                     Intent intent = new Intent(getActivity(), SharePicsPagerActivity.class);
                     intent.putExtra("position", position);
@@ -114,6 +131,39 @@ public class TaskFragment extends Fragment{
                 }
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_PICK_IMAGE) {
+            if (data != null){
+                Uri uri = data.getData();
+                if (uri != null && !uri.equals("")){
+                    //拿到图片后需要进行压缩
+                    Uri compressUri = BitmapUtils.compressBitmapFromUri(getActivity(), uri, COMPRESS_SIZE_WIDTH, COMPRESS_SIZE_HEIGHT);
+                    if (compressUri != null){
+                        sharePicGridAdpter.addPic(new PicsShare(BitmapUtils.getBitmapFromUri(getActivity(),compressUri),false));
+                        sharePicGridAdpter.notifyDataSetChanged();
+                    }
+                }
+            }
+        } else if (requestCode == REQUEST_CODE_CAPTURE_CAMEIA) {
+            receivePicFromCamera();
+        } else if (requestCode == RESULT_DELETE_PICS) {
+            PCLog.i(TAG+"result delete pics ");
+            if (data != null){
+                PCLog.i(TAG+" data != null ");
+                ArrayList<Integer> picpositions = data.getIntegerArrayListExtra("picpositions");
+                if (picpositions != null){
+                    for (Integer i : picpositions){
+                        PCLog.i(TAG+"删除图片 position "+i);
+                    }
+                    sharePicGridAdpter.deletePics(picpositions);
+                }
+            }
+
+        }
     }
 
     @Override
@@ -128,12 +178,105 @@ public class TaskFragment extends Fragment{
         itemListviewTaskAdapter = new ItemListviewTaskAdapter(getActivity());
         listView.setAdapter(itemListviewTaskAdapter);
         itemListviewTaskAdapter.setData(User.getInstance().getCurPlan().getTasks());
+        listDialog = new ListDialog(getActivity(), new ListDialog.OnBtnClickListener() {
+            @Override
+            public void btnAlbumClick() {
+                getImageFromAlbum();
+            }
+
+            @Override
+            public void btnCameraClick() {
+                getImageFromCamera();
+            }
+
+            @Override
+            public void btnCancelClick() {
+
+            }
+        });
     }
+
+    private void getImageFromAlbum() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");//相片类型
+        startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE);
+    }
+
+    private Uri cameiaImageUri;
+
+    private void getImageFromCamera() {
+        try {
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.TITLE, "New Picture");
+            values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
+            cameiaImageUri = getActivity().getContentResolver().insert(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, cameiaImageUri);
+            startActivityForResult(intent, REQUEST_CODE_CAPTURE_CAMEIA);
+        } catch (Exception e){
+            PCLog.i(e.getLocalizedMessage());
+            //crash at 6.0 when Permission Denial
+            // java.lang.SecurityException: Permission Denial: writing com.android.providers.media.MediaProvider uri
+            // content://media/external/images/media from pid=7318, uid=10199 requires android.permission.WRITE_EXTERNAL_STORAGE, or grantUriPermission()
+        }
+
+    }
+
+    private void receivePicFromCamera(){
+        try {
+            ExifInterface ei = new ExifInterface(getRealPathFromURI(cameiaImageUri));
+            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
+            Bitmap realBitamp,verticalBitmap;
+            switch(orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    realBitamp = BitmapUtils.decodeFromFile(new File(getRealPathFromURI(cameiaImageUri)),COMPRESS_SIZE_HEIGHT,COMPRESS_SIZE_WIDTH);
+                    verticalBitmap = BitmapUtils.rotateImage(realBitamp,90);
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    realBitamp = BitmapUtils.decodeFromFile(new File(getRealPathFromURI(cameiaImageUri)),COMPRESS_SIZE_WIDTH,COMPRESS_SIZE_HEIGHT);
+                    verticalBitmap = BitmapUtils.rotateImage(realBitamp,180);
+                    break;
+                default:
+                    realBitamp = BitmapUtils.decodeFromFile(new File(getRealPathFromURI(cameiaImageUri)),COMPRESS_SIZE_WIDTH,COMPRESS_SIZE_HEIGHT);
+                    verticalBitmap = realBitamp;
+                    break;
+            }
+            PCLog.i(TAG + "摄像头返回图片 Width " + realBitamp.getWidth() + " Height " + realBitamp.getHeight());
+            PCLog.i(TAG+"旋转处理后图片 Width "+ verticalBitmap.getWidth()+" Height "+verticalBitmap.getHeight());
+            sharePicGridAdpter.addPic(new PicsShare(verticalBitmap, false));
+            sharePicGridAdpter.notifyDataSetChanged();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public String getRealPathFromURI(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getActivity().managedQuery(contentUri, proj, null, null, null);
+        int column_index = cursor
+                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
+
 
     private void findviews(View view){
         listView = (ListViewForScrollView)view.findViewById(R.id.listview_tasks);
         gridView = (GridView)view.findViewById(R.id.grid_pics);
         btnPunch = (Button)view.findViewById(R.id.btn_punchcard);
+    }
+
+    @Override
+    public void addPic(PicsShare picsShare) {
+        sharePicGridAdpter.addPic(picsShare);
+        sharePicGridAdpter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void deletePic(ArrayList<Integer> picpositions) {
+        sharePicGridAdpter.deletePics(picpositions);
     }
 
     class ItemListviewTaskAdapter extends BaseAdapter {

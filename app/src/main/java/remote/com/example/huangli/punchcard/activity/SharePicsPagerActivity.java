@@ -31,6 +31,7 @@ public class SharePicsPagerActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share_pics);
+        IvDelete = (ImageView)findViewById(R.id.iv_delete);
         IvDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
