@@ -9,6 +9,7 @@ import remote.com.example.huangli.punchcard.dao.DaoMaster;
 import remote.com.example.huangli.punchcard.dao.DaoSession;
 import remote.com.example.huangli.punchcard.utils.PCLog;
 import remote.com.example.huangli.punchcard.utils.PlatformUtils;
+import remote.com.example.huangli.punchcard.utils.ToastUtils;
 
 /**
  * Created by huangli on 16/6/27.
@@ -37,6 +38,8 @@ public class DaoProxy {
             DaoMaster master = new DaoMaster(db);
             mDaoSession = master.newSession();
         } catch (SQLiteException e) {
+            SQLiteException ee = e;
+            ToastUtils.showShortToast(app,ee.getLocalizedMessage());
         }
     }
 

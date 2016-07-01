@@ -14,7 +14,7 @@ import remote.com.example.huangli.punchcard.dao.TaskEntity;
 /** 
  * DAO for table TASK_ENTITY.
 */
-public class TaskEntityDao extends AbstractDao<TaskEntity, Void> {
+public class TaskEntityDao extends AbstractDao<TaskEntity, String> {
 
     public static final String TABLENAME = "TASK_ENTITY";
 
@@ -23,7 +23,7 @@ public class TaskEntityDao extends AbstractDao<TaskEntity, Void> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property Key = new Property(0, String.class, "key", false, "KEY");
+        public final static Property Num = new Property(0, String.class, "num", true, "NUM");
         public final static Property Describe = new Property(1, String.class, "describe", false, "DESCRIBE");
         public final static Property IsComplated = new Property(2, boolean.class, "isComplated", false, "IS_COMPLATED");
         public final static Property RemindDays = new Property(3, String.class, "remindDays", false, "REMIND_DAYS");
@@ -42,7 +42,7 @@ public class TaskEntityDao extends AbstractDao<TaskEntity, Void> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'TASK_ENTITY' (" + //
-                "'KEY' TEXT NOT NULL ," + // 0: key
+                "'NUM' TEXT PRIMARY KEY NOT NULL ," + // 0: num
                 "'DESCRIBE' TEXT NOT NULL ," + // 1: describe
                 "'IS_COMPLATED' INTEGER NOT NULL ," + // 2: isComplated
                 "'REMIND_DAYS' TEXT NOT NULL );"); // 3: remindDays
@@ -58,7 +58,11 @@ public class TaskEntityDao extends AbstractDao<TaskEntity, Void> {
     @Override
     protected void bindValues(SQLiteStatement stmt, TaskEntity entity) {
         stmt.clearBindings();
-        stmt.bindString(1, entity.getKey());
+ 
+        String num = entity.getNum();
+        if (num != null) {
+            stmt.bindString(1, num);
+        }
         stmt.bindString(2, entity.getDescribe());
         stmt.bindLong(3, entity.getIsComplated() ? 1l: 0l);
         stmt.bindString(4, entity.getRemindDays());
@@ -66,15 +70,15 @@ public class TaskEntityDao extends AbstractDao<TaskEntity, Void> {
 
     /** @inheritdoc */
     @Override
-    public Void readKey(Cursor cursor, int offset) {
-        return null;
+    public String readKey(Cursor cursor, int offset) {
+        return cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0);
     }    
 
     /** @inheritdoc */
     @Override
     public TaskEntity readEntity(Cursor cursor, int offset) {
         TaskEntity entity = new TaskEntity( //
-            cursor.getString(offset + 0), // key
+            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // num
             cursor.getString(offset + 1), // describe
             cursor.getShort(offset + 2) != 0, // isComplated
             cursor.getString(offset + 3) // remindDays
@@ -85,7 +89,7 @@ public class TaskEntityDao extends AbstractDao<TaskEntity, Void> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, TaskEntity entity, int offset) {
-        entity.setKey(cursor.getString(offset + 0));
+        entity.setNum(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
         entity.setDescribe(cursor.getString(offset + 1));
         entity.setIsComplated(cursor.getShort(offset + 2) != 0);
         entity.setRemindDays(cursor.getString(offset + 3));
@@ -93,15 +97,18 @@ public class TaskEntityDao extends AbstractDao<TaskEntity, Void> {
     
     /** @inheritdoc */
     @Override
-    protected Void updateKeyAfterInsert(TaskEntity entity, long rowId) {
-        // Unsupported or missing PK type
-        return null;
+    protected String updateKeyAfterInsert(TaskEntity entity, long rowId) {
+        return entity.getNum();
     }
     
     /** @inheritdoc */
     @Override
-    public Void getKey(TaskEntity entity) {
-        return null;
+    public String getKey(TaskEntity entity) {
+        if(entity != null) {
+            return entity.getNum();
+        } else {
+            return null;
+        }
     }
 
     /** @inheritdoc */

@@ -1,7 +1,11 @@
 package remote.com.example.huangli.punchcard.model;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import remote.com.example.huangli.punchcard.R;
 
 /**
  * Created by huangli on 16/6/26.
@@ -46,6 +50,18 @@ public class Card {
 
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
+    }
+
+    public String convertTasksToStr(Context context){
+        StringBuilder sb = new StringBuilder();
+        for (Task task : tasks) {
+            sb.append(context.getString(R.string.task_tips) + " : " + task.getDescribe() + "\n");
+        }
+        return sb.toString();
+    }
+
+    public void convertStrToTasks(String str){
+
     }
 
     public String getDescribe() {

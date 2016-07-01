@@ -1,85 +1,79 @@
 package remote.com.example.huangli.punchcard.db;
 
 import android.content.Context;
-import android.os.AsyncTask;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.dao.query.QueryBuilder;
-import remote.com.example.huangli.punchcard.R;
-import remote.com.example.huangli.punchcard.dao.CardEntity;
 import remote.com.example.huangli.punchcard.dao.CardEntityDao;
 import remote.com.example.huangli.punchcard.dao.DaoSession;
-import remote.com.example.huangli.punchcard.model.Card;
-import remote.com.example.huangli.punchcard.model.Task;
+import remote.com.example.huangli.punchcard.dao.PlanEntity;
+import remote.com.example.huangli.punchcard.dao.PlanEntityDao;
+import remote.com.example.huangli.punchcard.dao.TaskEntityDao;
+import remote.com.example.huangli.punchcard.dao.UserEntity;
+import remote.com.example.huangli.punchcard.dao.UserEntityDao;
+import remote.com.example.huangli.punchcard.db.DaoProxy;
+import remote.com.example.huangli.punchcard.utils.ToastUtils;
 
 /**
  * Created by huangli on 16/6/26.
+ * 模拟服务器操作（实际是本地数据库）
  */
 public class DbServer {
-    private static DbServer dbServer;
     private Context mContext;
-
-    public static DbServer getInstance(Context context){
-        if (dbServer == null){
-            dbServer = new DbServer(context);
-        }
-        return dbServer;
-    }
-
     private CardEntityDao cardEntityDao;
+    private PlanEntityDao planEntityDao;
+    private TaskEntityDao taskEntityDao;
+    private UserEntityDao userEntityDao;
 
-    public DbServer(Context context){
+    public DbServer(Context context) {
         mContext = context;
         DaoSession daoSession = DaoProxy.getInstance(context).getDaoSession();
         if (daoSession != null) {
             cardEntityDao = daoSession.getCardEntityDao();
+            planEntityDao = daoSession.getPlanEntityDao();
+            taskEntityDao = daoSession.getTaskEntityDao();
+            userEntityDao = daoSession.getUserEntityDao();
         }
     }
 
-    public void insertCardToDb(Card card) {
-        StringBuilder sb = new StringBuilder();
-        for (Task task : card.getTasks()) {
-            sb.append(mContext.getString(R.string.task_tips) + " : " + task.getDescribe() + "\n");
+    public boolean insertUserToDB(String account, String passoword, String nickname, String signature, int lv, int curProgress){
+        UserEntity userEntity = new UserEntity(account,passoword,nickname,signature,lv,curProgress);
+        long id =  userEntityDao.insertOrReplace(userEntity);
+        if (id == 0){
+            return false;
         }
-        CardEntity cardEntity = new CardEntity("world", card.getType(), card.getDescribe(), sb.toString(), card.getNickName());
-        cardEntityDao.insert(cardEntity);
+        return true;
     }
 
-    public List<Card> loadCardsFromDb(){
-        AsyncTask asyncTask = new AsyncTask() {
-            @Override
-            protected Object doInBackground(Object[] params) {
-                return null;
-            }
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-            }
-
-            @Override
-            protected void onPostExecute(Object o) {
-                super.onPostExecute(o);
-            }
-
-            @Override
-            protected void onProgressUpdate(Object[] values) {
-                super.onProgressUpdate(values);
-            }
-        };
-        asyncTask.execute();
-
-
-
-        List<Card> cards = new ArrayList<>();
-        QueryBuilder qb = cardEntityDao.queryBuilder();
-        List<CardEntity> cardEntities = qb.where(CardEntityDao.Properties.Key.in("world")).limit(100).list();
-        for (CardEntity cardEntity : cardEntities) {
-            Card card = new Card(cardEntity.getNickName(),cardEntity.getType(),cardEntity.getDescribe());
-            cards.add(card);
+    public UserEntity queryUserInDB(String account, String passoword){
+        QueryBuilder qb = userEntityDao.queryBuilder();
+        List<UserEntity> userEntities = qb.where(UserEntityDao.Properties.Account.eq(account)).list();
+        if (userEntities.size() > 0){
+            return userEntities.get(0);
+        }else {
+            return null;
         }
-        return cards;
     }
+
+    public boolean insertPlanToDB(String account, String num, String describe, int type){
+        PlanEntity planEntity = new PlanEntity(account,num,describe,type);
+        long id = planEntityDao.insertOrReplace(planEntity);
+        if (id == 0){
+            return false;
+        }
+        return true;
+    }
+
+    public List<PlanEntity> queryPlanInDB(String account){
+        QueryBuilder qb = planEntityDao.queryBuilder();
+        List<PlanEntity> planEntities = qb.where(UserEntityDao.Properties.Account.eq(account)).list();
+        return planEntities;
+    }
+
+//    public PlanEntity queryCurPlanInDB(String account,String num){
+//        QueryBuilder qb = planEntityDao.queryBuilder();
+//
+//    }
+
 }

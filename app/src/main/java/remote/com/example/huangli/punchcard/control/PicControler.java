@@ -8,10 +8,12 @@ import android.graphics.Bitmap;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
 
 import java.io.File;
 import java.util.ArrayList;
 
+import remote.com.example.huangli.punchcard.activity.SharePicsPagerActivity;
 import remote.com.example.huangli.punchcard.model.PicsShare;
 import remote.com.example.huangli.punchcard.utils.BitmapUtils;
 import remote.com.example.huangli.punchcard.utils.PCLog;
@@ -31,6 +33,7 @@ public class PicControler {
     public static final int RESULT_DELETE_PICS = 2;
 
     private Activity mActivity;
+    private Fragment mFragment;
     private Uri cameiaImageUri;
 
     public interface PicActionListener{
@@ -45,13 +48,23 @@ public class PicControler {
         mPicActionListener = picActionListener;
     }
 
-    private void getImageFromAlbum() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");//相片类型
-        mActivity.startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE);
+    public PicControler(Fragment fragment,PicActionListener picActionListener){
+        mActivity = fragment.getActivity();
+        mFragment = fragment;
+        mPicActionListener = picActionListener;
     }
 
-    private void getImageFromCamera() {
+    public void getImageFromAlbum() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");//相片类型
+        if (mFragment != null){
+            mFragment.startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE);
+        }else{
+            mActivity.startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE);
+        }
+    }
+
+    public void getImageFromCamera() {
         try {
             ContentValues values = new ContentValues();
             values.put(MediaStore.Images.Media.TITLE, "New Picture");
@@ -60,7 +73,11 @@ public class PicControler {
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, cameiaImageUri);
-            mActivity.startActivityForResult(intent, REQUEST_CODE_CAPTURE_CAMEIA);
+            if (mFragment != null){
+                mFragment.startActivityForResult(intent, REQUEST_CODE_CAPTURE_CAMEIA);
+            }else {
+                mActivity.startActivityForResult(intent, REQUEST_CODE_CAPTURE_CAMEIA);
+            }
         } catch (Exception e){
             PCLog.i(e.getLocalizedMessage());
             //crash at 6.0 when Permission Denial
@@ -68,6 +85,18 @@ public class PicControler {
             // content://media/external/images/media from pid=7318, uid=10199 requires android.permission.WRITE_EXTERNAL_STORAGE, or grantUriPermission()
         }
 
+    }
+
+    public void showPicInActivity(int position){
+        Intent intent = new Intent(mActivity, SharePicsPagerActivity.class);
+        intent.putExtra("position", position);
+//                    ArrayList<PicsShare> shares = sharePrizePicGridAdpter.getContentPicsShares();
+//                    intent.putExtra("picsshares",(Serializable)shares );
+        if (mFragment != null){
+            mFragment.startActivityForResult(intent, RESULT_DELETE_PICS);
+        }else {
+            mActivity.startActivityForResult(intent, RESULT_DELETE_PICS);
+        }
     }
 
     private PicsShare receivePicFromCamera(){

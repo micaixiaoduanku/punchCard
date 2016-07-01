@@ -4,6 +4,7 @@
     <string name="label_activity_plan">当前计划列表</string>
     <string name="label_activity_make_new_plan">新的计划</string>
     <string name="label_activity_add_new_task">新的任务</string>
+    <string name="label_activity_login">每日打卡</string>
 
     <string name="bottom_action_bar_task">今日目标</string>
     <string name="bottom_action_bar_friend">朋友</string>
@@ -47,4 +48,19 @@
     <string name="share_dialog_camera">拍照</string>
     <string name="share_dialog_cancel">取消</string>
 
+    <string name="login_activity_acount">账号</string>
+    <string name="login_activity_password">密码</string>
+    <string name="login_activity_signin">注册</string>
+    <string name="login_activity_go_login">去登录</string>
+    <string name="login_activity_go_sign">去注册</string>
+    <string name="login_activity_login">登录</string>
+    <string name="login_activity_sign">注册</string>
+    <string name="login_activity_go_signin">去注册</string>
+    <string name="login_activity_nickname">昵称</string>
+
+    <string name="login_activity_signin_succeed">注册成功</string>
+    <string name="login_activity_signin_failed">注册失败</string>
+
+    <string name="login_activity_login_succeed">登录成功</string>
+    <string name="login_activity_login_failed">登录失败</string>
 </resources>

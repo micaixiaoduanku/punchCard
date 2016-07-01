@@ -12,9 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import remote.com.example.huangli.punchcard.MainApp;
 import remote.com.example.huangli.punchcard.R;
 import remote.com.example.huangli.punchcard.activity.PlanActivity;
-import remote.com.example.huangli.punchcard.model.User;
 
 /**
  * Created by huangli on 16/6/19.
@@ -51,10 +51,10 @@ public class MineFragment extends Fragment implements View.OnClickListener{
     }
 
     private void initUi() {
-        tvNickName.setText(User.getInstance().getNickname());
-        tvNickLv.setText("LV"+String.valueOf(User.getInstance().getLv()));
-        tvProgress.setText(String.valueOf(User.getInstance().getCurProgress())+"%");
-        tvSignature.setText(User.getInstance().getSignature());
+        tvNickName.setText(MainApp.user.nickname);
+        tvNickLv.setText("LV"+String.valueOf(MainApp.user.lv));
+        tvProgress.setText(String.valueOf(MainApp.user.curProgress)+"%");
+        tvSignature.setText(MainApp.user.signature);
     }
 
     private void findViews(View view) {

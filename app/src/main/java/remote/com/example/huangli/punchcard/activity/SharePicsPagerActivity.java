@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import remote.com.example.huangli.punchcard.R;
 import remote.com.example.huangli.punchcard.adpter.SharePicsPagerAdpter;
+import remote.com.example.huangli.punchcard.control.PicControler;
 import remote.com.example.huangli.punchcard.fragment.TaskFragment;
 import remote.com.example.huangli.punchcard.model.PicsShare;
 import remote.com.example.huangli.punchcard.utils.PCLog;
@@ -65,7 +66,7 @@ public class SharePicsPagerActivity extends Activity{
             PCLog.i(TAG+"删除图片 position "+i);
         }
         intent.putIntegerArrayListExtra("picpositions",deletepicpostions);
-        setResult(TaskFragment.RESULT_DELETE_PICS,intent);
+        setResult(PicControler.RESULT_DELETE_PICS,intent);
         finish();
         super.onBackPressed();
     }

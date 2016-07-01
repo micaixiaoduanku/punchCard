@@ -14,7 +14,7 @@ import remote.com.example.huangli.punchcard.dao.CardEntity;
 /** 
  * DAO for table CARD_ENTITY.
 */
-public class CardEntityDao extends AbstractDao<CardEntity, Void> {
+public class CardEntityDao extends AbstractDao<CardEntity, String> {
 
     public static final String TABLENAME = "CARD_ENTITY";
 
@@ -23,7 +23,7 @@ public class CardEntityDao extends AbstractDao<CardEntity, Void> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property Key = new Property(0, String.class, "key", false, "KEY");
+        public final static Property Key = new Property(0, String.class, "key", true, "KEY");
         public final static Property Type = new Property(1, String.class, "type", false, "TYPE");
         public final static Property Describe = new Property(2, String.class, "describe", false, "DESCRIBE");
         public final static Property Taskscontent = new Property(3, String.class, "taskscontent", false, "TASKSCONTENT");
@@ -43,7 +43,7 @@ public class CardEntityDao extends AbstractDao<CardEntity, Void> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'CARD_ENTITY' (" + //
-                "'KEY' TEXT NOT NULL ," + // 0: key
+                "'KEY' TEXT PRIMARY KEY NOT NULL ," + // 0: key
                 "'TYPE' TEXT NOT NULL ," + // 1: type
                 "'DESCRIBE' TEXT NOT NULL ," + // 2: describe
                 "'TASKSCONTENT' TEXT NOT NULL ," + // 3: taskscontent
@@ -60,7 +60,11 @@ public class CardEntityDao extends AbstractDao<CardEntity, Void> {
     @Override
     protected void bindValues(SQLiteStatement stmt, CardEntity entity) {
         stmt.clearBindings();
-        stmt.bindString(1, entity.getKey());
+ 
+        String key = entity.getKey();
+        if (key != null) {
+            stmt.bindString(1, key);
+        }
         stmt.bindString(2, entity.getType());
         stmt.bindString(3, entity.getDescribe());
         stmt.bindString(4, entity.getTaskscontent());
@@ -69,15 +73,15 @@ public class CardEntityDao extends AbstractDao<CardEntity, Void> {
 
     /** @inheritdoc */
     @Override
-    public Void readKey(Cursor cursor, int offset) {
-        return null;
+    public String readKey(Cursor cursor, int offset) {
+        return cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0);
     }    
 
     /** @inheritdoc */
     @Override
     public CardEntity readEntity(Cursor cursor, int offset) {
         CardEntity entity = new CardEntity( //
-            cursor.getString(offset + 0), // key
+            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // key
             cursor.getString(offset + 1), // type
             cursor.getString(offset + 2), // describe
             cursor.getString(offset + 3), // taskscontent
@@ -89,7 +93,7 @@ public class CardEntityDao extends AbstractDao<CardEntity, Void> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, CardEntity entity, int offset) {
-        entity.setKey(cursor.getString(offset + 0));
+        entity.setKey(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
         entity.setType(cursor.getString(offset + 1));
         entity.setDescribe(cursor.getString(offset + 2));
         entity.setTaskscontent(cursor.getString(offset + 3));
@@ -98,15 +102,18 @@ public class CardEntityDao extends AbstractDao<CardEntity, Void> {
     
     /** @inheritdoc */
     @Override
-    protected Void updateKeyAfterInsert(CardEntity entity, long rowId) {
-        // Unsupported or missing PK type
-        return null;
+    protected String updateKeyAfterInsert(CardEntity entity, long rowId) {
+        return entity.getKey();
     }
     
     /** @inheritdoc */
     @Override
-    public Void getKey(CardEntity entity) {
-        return null;
+    public String getKey(CardEntity entity) {
+        if(entity != null) {
+            return entity.getKey();
+        } else {
+            return null;
+        }
     }
 
     /** @inheritdoc */

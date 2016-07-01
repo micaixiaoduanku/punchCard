@@ -16,8 +16,6 @@ import java.util.List;
 
 import remote.com.example.huangli.punchcard.R;
 import remote.com.example.huangli.punchcard.model.Card;
-import remote.com.example.huangli.punchcard.model.Task;
-import remote.com.example.huangli.punchcard.db.DbServer;
 
 /**
  * Created by huangli on 16/6/19.
@@ -27,9 +25,15 @@ public class WorldFragment extends Fragment{
     private ListView listView;
     private ItemListCardWorldAdapter itemListCardWorldAdapter;
 
+
     public static WorldFragment newInstance() {
         WorldFragment fragment = new WorldFragment();
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Nullable
@@ -42,14 +46,11 @@ public class WorldFragment extends Fragment{
     }
 
     private void initUi() {
-        itemListCardWorldAdapter = new ItemListCardWorldAdapter(getActivity(), DbServer.getInstance(getActivity()).loadCardsFromDb());
-        listView.setAdapter(itemListCardWorldAdapter);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        itemListCardWorldAdapter.setData(DbServer.getInstance(getActivity()).loadCardsFromDb());
     }
 
     private void findViews(View view){
@@ -103,11 +104,7 @@ public class WorldFragment extends Fragment{
             //TODO implement
             holder.tvDescribe.setText(object.getDescribe());
             holder.tvNickName.setText(object.getNickName());
-            StringBuilder sb = new StringBuilder();
-            for (Task task:object.getTasks()){
-                sb.append(getString(R.string.task_tips)+" : "+task.getDescribe()+"\n");
-            }
-            holder.tvTasks.setText(sb.toString());
+            holder.tvTasks.setText(object.convertTasksToStr(context));
         }
 
         protected class ViewHolder {

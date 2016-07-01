@@ -6,8 +6,7 @@ package remote.com.example.huangli.punchcard.dao;
  */
 public class TaskEntity {
 
-    /** Not-null value. */
-    private String key;
+    private String num;
     /** Not-null value. */
     private String describe;
     private boolean isComplated;
@@ -17,21 +16,23 @@ public class TaskEntity {
     public TaskEntity() {
     }
 
-    public TaskEntity(String key, String describe, boolean isComplated, String remindDays) {
-        this.key = key;
+    public TaskEntity(String num) {
+        this.num = num;
+    }
+
+    public TaskEntity(String num, String describe, boolean isComplated, String remindDays) {
+        this.num = num;
         this.describe = describe;
         this.isComplated = isComplated;
         this.remindDays = remindDays;
     }
 
-    /** Not-null value. */
-    public String getKey() {
-        return key;
+    public String getNum() {
+        return num;
     }
 
-    /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setKey(String key) {
-        this.key = key;
+    public void setNum(String num) {
+        this.num = num;
     }
 
     /** Not-null value. */

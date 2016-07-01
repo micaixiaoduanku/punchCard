@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,14 +14,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import remote.com.example.huangli.punchcard.R;
 import remote.com.example.huangli.punchcard.ctviews.ListViewForScrollView;
-import remote.com.example.huangli.punchcard.model.Plan;
 import remote.com.example.huangli.punchcard.model.Task;
-import remote.com.example.huangli.punchcard.model.User;
 import remote.com.example.huangli.punchcard.utils.ToastUtils;
 
 /**
@@ -38,7 +34,6 @@ public class EditPlanActivity extends BaseActivity implements View.OnClickListen
     public static final String BUNDLE_KEY_DESCRIBE = "BUNDLE_KEY_DESCRIBE";
     public static final String BUNDLE_KEY_DAYS = "BUNDLE_KEY_DAYS";
 
-    private Plan plan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +41,6 @@ public class EditPlanActivity extends BaseActivity implements View.OnClickListen
         setContentView(R.layout.activity_edit_plan);
         Intent intent = getIntent();
         if (intent != null){
-            int type = intent.getIntExtra("type",Plan.TYPE_100_DAYS);
-            plan = new Plan(type);
         }else {
             finish();
         }
@@ -57,18 +50,18 @@ public class EditPlanActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void initUi() {
-        itemListViewTaskAdapter = new ItemListViewTaskAdapter(this,plan.getTasks());
-        listviewTasks.setAdapter(itemListViewTaskAdapter);
-        listviewTasks.setDivider(null);
-        listviewTasks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(EditPlanActivity.this,AddTaskActivity.class);
-                intent.putExtra(BUNDLE_KEY_DESCRIBE,plan.getTasks().get(position).getDescribe());
-                intent.putExtra(BUNDLE_KEY_DAYS,plan.getTasks().get(position).getRemindDays());
-                startActivityForResult(intent, REQUEST_CODE_MODIFY_TASK);
-            }
-        });
+//        itemListViewTaskAdapter = new ItemListViewTaskAdapter(this,plan.getTasks());
+//        listviewTasks.setAdapter(itemListViewTaskAdapter);
+//        listviewTasks.setDivider(null);
+//        listviewTasks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Intent intent = new Intent(EditPlanActivity.this,AddTaskActivity.class);
+//                intent.putExtra(BUNDLE_KEY_DESCRIBE,plan.getTasks().get(position).getDescribe());
+//                intent.putExtra(BUNDLE_KEY_DAYS,plan.getTasks().get(position).getRemindDays());
+//                startActivityForResult(intent, REQUEST_CODE_MODIFY_TASK);
+//            }
+//        });
     }
 
     private void setListeners() {
@@ -93,8 +86,7 @@ public class EditPlanActivity extends BaseActivity implements View.OnClickListen
             case R.id.btn_ok:
                 //TODO implement
                 if (isFormatOk()){
-                    plan.setDescribe(getEdGoal().getText().toString());
-                    User.getInstance().addPlan(plan);
+//                    plan.setDescribe(getEdGoal().getText().toString());
                     finish();
                 }
                 break;
@@ -118,8 +110,8 @@ public class EditPlanActivity extends BaseActivity implements View.OnClickListen
         if(requestCode == REQUEST_CODE_ADD_TASK){
             String describe = data.getExtras().getString(BUNDLE_KEY_DESCRIBE);
             int[] days = data.getExtras().getIntArray(BUNDLE_KEY_DAYS);
-            Task task = new Task(describe,days,false);
-            plan.addTask(task);
+//            Task task = new Task(describe,days,false);
+//            plan.addTask(task);
             itemListViewTaskAdapter.notifyDataSetChanged();
         }
     }

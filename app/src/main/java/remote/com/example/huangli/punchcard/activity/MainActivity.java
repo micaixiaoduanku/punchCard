@@ -1,11 +1,10 @@
 package remote.com.example.huangli.punchcard.activity;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
 import remote.com.example.huangli.punchcard.R;
 import remote.com.example.huangli.punchcard.ctviews.BottomActionBar;

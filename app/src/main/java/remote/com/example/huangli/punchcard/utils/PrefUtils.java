@@ -3,6 +3,8 @@ package remote.com.example.huangli.punchcard.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import remote.com.example.huangli.punchcard.GlobalContext;
+
 /**
  * @author toby.du
  * @date 2014年12月27日
@@ -27,6 +29,14 @@ public class PrefUtils {
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(key, value);
         return editor.commit();
+    }
+
+    public static boolean putString(String key, String value) {
+        return putString(GlobalContext.get(), key, value);
+    }
+
+    public static String getString(String key, String defaultValue) {
+        return getString(GlobalContext.get(), key, defaultValue);
     }
 
     /**
@@ -58,6 +68,10 @@ public class PrefUtils {
         return settings.getString(key, defaultValue);
     }
 
+    public static boolean putInt(String key, int value) {
+        return putInt(GlobalContext.get(), key, value);
+    }
+
     /**
      * put int preferences
      *
@@ -72,6 +86,10 @@ public class PrefUtils {
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt(key, value);
         return editor.commit();
+    }
+
+    public static int getInt(String key, int defaultValue) {
+        return getInt(GlobalContext.get(), key, defaultValue);
     }
 
     /**
@@ -101,6 +119,10 @@ public class PrefUtils {
     public static int getInt(Context context, String key, int defaultValue) {
         SharedPreferences settings = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return settings.getInt(key, defaultValue);
+    }
+
+    public static boolean putLong(String key, long value) {
+        return putLong(GlobalContext.get(),key,value);
     }
 
     /**

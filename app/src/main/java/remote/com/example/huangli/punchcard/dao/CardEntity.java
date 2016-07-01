@@ -6,7 +6,6 @@ package remote.com.example.huangli.punchcard.dao;
  */
 public class CardEntity {
 
-    /** Not-null value. */
     private String key;
     /** Not-null value. */
     private String type;
@@ -20,6 +19,10 @@ public class CardEntity {
     public CardEntity() {
     }
 
+    public CardEntity(String key) {
+        this.key = key;
+    }
+
     public CardEntity(String key, String type, String describe, String taskscontent, String nickName) {
         this.key = key;
         this.type = type;
@@ -28,12 +31,10 @@ public class CardEntity {
         this.nickName = nickName;
     }
 
-    /** Not-null value. */
     public String getKey() {
         return key;
     }
 
-    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setKey(String key) {
         this.key = key;
     }
