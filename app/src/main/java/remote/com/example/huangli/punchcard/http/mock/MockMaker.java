@@ -12,13 +12,17 @@ import java.util.List;
 import java.util.Map;
 
 import remote.com.example.huangli.punchcard.dao.PlanEntity;
+import remote.com.example.huangli.punchcard.dao.TaskEntity;
 import remote.com.example.huangli.punchcard.dao.UserEntity;
 import remote.com.example.huangli.punchcard.http.HttpProtocol;
+import remote.com.example.huangli.punchcard.pojo.Pojo_Cur_Plan;
 import remote.com.example.huangli.punchcard.pojo.Pojo_Plan;
 import remote.com.example.huangli.punchcard.pojo.Pojo_Plan_List;
 import remote.com.example.huangli.punchcard.pojo.Pojo_Result;
+import remote.com.example.huangli.punchcard.pojo.Pojo_Task;
 import remote.com.example.huangli.punchcard.pojo.Pojo_User;
 import remote.com.example.huangli.punchcard.db.DbServer;
+import remote.com.example.huangli.punchcard.utils.StringUtil;
 
 /**
  * Created by wangjun on 16/3/28.
@@ -45,8 +49,8 @@ public class MockMaker {
             String password = (String) params.get("password");
             String nickname = (String) params.get("nickname");
             boolean issucceed = dbServer.insertUserToDB(account,password,nickname,"",1,0);
-            Pojo_Result pojo_result = new Pojo_Result(issucceed?0:1,"");
-            return gson.toJson(pojo_result);
+            Pojo_User pojo_user = new Pojo_User(issucceed?0:1,"",account,0,nickname,"",password,0);
+            return gson.toJson(pojo_user);
         }
         if (url.equals(HttpProtocol.URLS.USER_LOGIN)){
             String account = (String) params.get("account");
@@ -81,9 +85,20 @@ public class MockMaker {
         }
         if (url.equals(HttpProtocol.URLS.REQUEST_CUR_PLAN)){
             String account = (String) params.get("account");
-            String plan_num = (String) params.get("plannum");
+            String plannum = (String) params.get("plannum");
+            PlanEntity planEntity = dbServer.queryCurPlanInDB(account,plannum);
+            if (planEntity != null){
+                Pojo_Cur_Plan pojo_cur_plan = new Pojo_Cur_Plan(0,"",planEntity.getType(),planEntity.getDescribe(),planEntity.getNum());
+                List<TaskEntity> taskEntities = dbServer.queryTasksInDB(planEntity.getNum());
+                List<Pojo_Task> list = new ArrayList<>();
+                for (TaskEntity taskEntity : taskEntities){
+                    list.add(new Pojo_Task(taskEntity.getDescribe(),taskEntity.getIsComplated(), StringUtil.parseStrToArray(taskEntity.getRemindDays())));
+                }
+                pojo_cur_plan.tasks = list;
+                return gson.toJson(pojo_cur_plan);
+            }
         }
-        Pojo_Result pojo_result = new Pojo_Result(1,"");
+        Pojo_Result pojo_result = new Pojo_Result(1,"没有数据");
         return gson.toJson(pojo_result);
     }
 

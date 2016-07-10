@@ -13,10 +13,13 @@ import android.widget.TextView;
 
 import java.util.HashMap;
 
+import remote.com.example.huangli.punchcard.MainApp;
 import remote.com.example.huangli.punchcard.R;
+import remote.com.example.huangli.punchcard.control.UserControler;
 import remote.com.example.huangli.punchcard.http.HttpProtocol;
 import remote.com.example.huangli.punchcard.http.Network;
 import remote.com.example.huangli.punchcard.pojo.Pojo_Result;
+import remote.com.example.huangli.punchcard.pojo.Pojo_User;
 import remote.com.example.huangli.punchcard.utils.ToastUtils;
 
 /**
@@ -50,7 +53,13 @@ public class LogInActivity extends BaseActivity implements View.OnClickListener{
         btnSignIn.setOnClickListener(this);
         btnLogin.setOnClickListener(this);
         btnGo = (TextView) findViewById(R.id.btn_go);
+        initUi();
 
+    }
+
+    private void initUi() {
+        getEditLoginAcount().setText(UserControler.getAccountFromPref());
+        getEditLoginPassword().setText(UserControler.getPasswordFromPref());
     }
 
     private EditText getEditLoginAcount(){
@@ -73,15 +82,29 @@ public class LogInActivity extends BaseActivity implements View.OnClickListener{
         return (EditText) findViewById(R.id.edit_sign_password);
     }
 
+    private void skipToMainActivity(Pojo_User o){
+        if (o != null){
+            MainApp.user = o;
+            UserControler.putAccountToPref(o.account);
+            UserControler.putPasswordToPref(o.passoword);
+            startActivity(new Intent(LogInActivity.this,MainActivity.class));
+            finish();
+        }
+    }
+
     private void login(String account,String password){
         HashMap<String,Object> map = new HashMap<>();
         map.put("account",account);
         map.put("password",password);
-        Network.get(this).asyncPost(HttpProtocol.URLS.USER_LOGIN, map, new Network.JsonCallBack<Pojo_Result>() {
+        Network.get(this).asyncPost(HttpProtocol.URLS.USER_LOGIN, map, new Network.JsonCallBack<Pojo_User>() {
             @Override
-            public void onSuccess(Pojo_Result o) {
-                ToastUtils.showShortToast(LogInActivity.this,R.string.login_activity_login_succeed);
-                startActivity(new Intent(LogInActivity.this,MainActivity.class));
+            public void onSuccess(Pojo_User o) {
+                if (o.code == 0){
+                    ToastUtils.showShortToast(LogInActivity.this,R.string.login_activity_login_succeed);
+                    skipToMainActivity(o);
+                }else {
+                    ToastUtils.showShortToast(LogInActivity.this,R.string.login_activity_login_failed);
+                }
             }
 
             @Override
@@ -90,8 +113,8 @@ public class LogInActivity extends BaseActivity implements View.OnClickListener{
             }
 
             @Override
-            public Class<Pojo_Result> getObjectClass() {
-                return Pojo_Result.class;
+            public Class<Pojo_User> getObjectClass() {
+                return Pojo_User.class;
             }
         });
     }
@@ -101,10 +124,15 @@ public class LogInActivity extends BaseActivity implements View.OnClickListener{
         map.put("account",account);
         map.put("password",password);
         map.put("nickname",nickName);
-        Network.get(this).asyncPost(HttpProtocol.URLS.USER_SIGNIN, map, new Network.JsonCallBack<Pojo_Result>() {
+        Network.get(this).asyncPost(HttpProtocol.URLS.USER_SIGNIN, map, new Network.JsonCallBack<Pojo_User>() {
             @Override
-            public void onSuccess(Pojo_Result o) {
-                ToastUtils.showShortToast(LogInActivity.this,R.string.login_activity_signin_succeed);
+            public void onSuccess(Pojo_User o) {
+                if (o.code == 0){
+                    skipToMainActivity(o);
+                    ToastUtils.showShortToast(LogInActivity.this,R.string.login_activity_signin_succeed);
+                }else {
+                    ToastUtils.showShortToast(LogInActivity.this,R.string.login_activity_signin_failed);
+                }
             }
 
             @Override
@@ -113,8 +141,8 @@ public class LogInActivity extends BaseActivity implements View.OnClickListener{
             }
 
             @Override
-            public Class<Pojo_Result> getObjectClass() {
-                return Pojo_Result.class;
+            public Class<Pojo_User> getObjectClass() {
+                return Pojo_User.class;
             }
         });
     }

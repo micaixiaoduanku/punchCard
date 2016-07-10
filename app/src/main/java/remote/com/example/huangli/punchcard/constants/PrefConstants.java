@@ -27,12 +27,8 @@ public class PrefConstants {
     }
 
     public static final class UserInfo{
-        public static final String PLATFORM_NAME = "platform_name";
-        public static final String USER_NAME = "user_name";
-        public static final String USER_ICON_URL = "user_icon_url";
-        public static final String LEVEL= "level";
-        public static final String COIN = "coin";
-        public static final String GEO = "geo";
+        public static final String ACCOUNT = "account";
+        public static final String PASSWORD = "password";
         public static final String UID = "userId";
     }
 

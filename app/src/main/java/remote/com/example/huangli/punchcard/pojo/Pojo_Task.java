@@ -6,13 +6,12 @@ import java.util.Arrays;
 /**
  * Created by huangli on 16/6/30.
  */
-public class Pojo_Task extends Pojo_Result implements Serializable{
+public class Pojo_Task implements Serializable{
     public String describe;
     public boolean isComplated;
-    public int[] remindDays;
+    public Integer[] remindDays;
 
-    public Pojo_Task(int code, String msg, String describe, boolean isComplated, int[] remindDays) {
-        super(code, msg);
+    public Pojo_Task( String describe, boolean isComplated, Integer[] remindDays) {
         this.describe = describe;
         this.isComplated = isComplated;
         this.remindDays = remindDays;

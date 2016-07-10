@@ -9,11 +9,10 @@ import remote.com.example.huangli.punchcard.dao.CardEntityDao;
 import remote.com.example.huangli.punchcard.dao.DaoSession;
 import remote.com.example.huangli.punchcard.dao.PlanEntity;
 import remote.com.example.huangli.punchcard.dao.PlanEntityDao;
+import remote.com.example.huangli.punchcard.dao.TaskEntity;
 import remote.com.example.huangli.punchcard.dao.TaskEntityDao;
 import remote.com.example.huangli.punchcard.dao.UserEntity;
 import remote.com.example.huangli.punchcard.dao.UserEntityDao;
-import remote.com.example.huangli.punchcard.db.DaoProxy;
-import remote.com.example.huangli.punchcard.utils.ToastUtils;
 
 /**
  * Created by huangli on 16/6/26.
@@ -71,9 +70,28 @@ public class DbServer {
         return planEntities;
     }
 
-//    public PlanEntity queryCurPlanInDB(String account,String num){
-//        QueryBuilder qb = planEntityDao.queryBuilder();
-//
-//    }
+    public PlanEntity queryCurPlanInDB(String account,String num){
+        QueryBuilder qb = planEntityDao.queryBuilder();
+        List<PlanEntity> planEntities = qb.where(PlanEntityDao.Properties.Account.eq(account),PlanEntityDao.Properties.Num.eq(num)).list();
+        if (planEntities.size() > 0){
+            return planEntities.get(0);
+        }else {
+            return null;
+        }
+    }
 
+    public boolean insertTaskToDB(String num, String describe, boolean isComplated, String remindDays){
+        TaskEntity taskEntity = new TaskEntity(num,describe,isComplated,remindDays);
+        long id = taskEntityDao.insertOrReplace(taskEntity);
+        if (id == 0){
+            return false;
+        }
+        return true;
+    }
+
+    public List<TaskEntity> queryTasksInDB(String num){
+        QueryBuilder qb = taskEntityDao.queryBuilder();
+        List<TaskEntity> taskEntities = qb.where(TaskEntityDao.Properties.Num.eq(num)).list();
+        return taskEntities;
+    }
 }

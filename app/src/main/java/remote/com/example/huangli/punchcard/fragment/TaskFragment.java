@@ -29,8 +29,7 @@ import remote.com.example.huangli.punchcard.http.HttpProtocol;
 import remote.com.example.huangli.punchcard.http.Network;
 import remote.com.example.huangli.punchcard.model.PicsShare;
 import remote.com.example.huangli.punchcard.model.Task;
-import remote.com.example.huangli.punchcard.pojo.Pojo_Plan_List;
-import remote.com.example.huangli.punchcard.pojo.Pojo_Result;
+import remote.com.example.huangli.punchcard.pojo.Pojo_Cur_Plan;
 import remote.com.example.huangli.punchcard.utils.ToastUtils;
 
 /**
@@ -46,6 +45,8 @@ public class TaskFragment extends Fragment implements PicControler.PicActionList
     private ListDialog listDialog;
 
     private PicControler picControler;
+
+    private Pojo_Cur_Plan pojo_cur_plan;
 
     public static TaskFragment newInstance() {
         TaskFragment fragment = new TaskFragment();
@@ -71,20 +72,21 @@ public class TaskFragment extends Fragment implements PicControler.PicActionList
     private void requestData(){
         HashMap<String ,Object> map = new HashMap<>();
         map.put("account", MainApp.user.account);
-        Network.get(getActivity()).asyncPost(HttpProtocol.URLS.REQUEST_PLANS, map, new Network.JsonCallBack<Pojo_Plan_List>() {
+        map.put("plannum", "0");
+        Network.get(getActivity()).asyncPost(HttpProtocol.URLS.REQUEST_CUR_PLAN, map, new Network.JsonCallBack<Pojo_Cur_Plan>() {
             @Override
-            public void onSuccess(Pojo_Plan_List pojo_result) {
-
+            public void onSuccess(Pojo_Cur_Plan pojo_cur_plan) {
+                TaskFragment.this.pojo_cur_plan = pojo_cur_plan;
             }
 
             @Override
             public void onFailed(int code, String message, Exception e) {
-
+                ToastUtils.showShortToast(getActivity(),message);
             }
 
             @Override
-            public Class<Pojo_Plan_List> getObjectClass() {
-                return Pojo_Plan_List.class;
+            public Class<Pojo_Cur_Plan> getObjectClass() {
+                return Pojo_Cur_Plan.class;
             }
         });
     }
