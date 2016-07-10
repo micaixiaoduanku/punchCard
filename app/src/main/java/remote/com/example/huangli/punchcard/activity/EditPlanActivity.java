@@ -14,11 +14,17 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.HashMap;
 import java.util.List;
 
+import remote.com.example.huangli.punchcard.MainApp;
 import remote.com.example.huangli.punchcard.R;
 import remote.com.example.huangli.punchcard.ctviews.ListViewForScrollView;
+import remote.com.example.huangli.punchcard.http.HttpProtocol;
+import remote.com.example.huangli.punchcard.http.Network;
 import remote.com.example.huangli.punchcard.model.Task;
+import remote.com.example.huangli.punchcard.pojo.Pojo_Result;
+import remote.com.example.huangli.punchcard.utils.RandomStringUtils;
 import remote.com.example.huangli.punchcard.utils.ToastUtils;
 
 /**
@@ -34,6 +40,8 @@ public class EditPlanActivity extends BaseActivity implements View.OnClickListen
     public static final String BUNDLE_KEY_DESCRIBE = "BUNDLE_KEY_DESCRIBE";
     public static final String BUNDLE_KEY_DAYS = "BUNDLE_KEY_DAYS";
 
+    private int type;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +49,43 @@ public class EditPlanActivity extends BaseActivity implements View.OnClickListen
         setContentView(R.layout.activity_edit_plan);
         Intent intent = getIntent();
         if (intent != null){
+            type = getIntent().getIntExtra("type",0);
         }else {
             finish();
         }
         findViews();
         setListeners();
         initUi();
+    }
+
+    private void sendAddPlanRequest(){
+        HashMap<String,Object> maps = new HashMap<>();
+        String num = RandomStringUtils.getRandomString(8);
+        maps.put("num",num);
+        maps.put("account", MainApp.user.account);
+        maps.put("type", type);
+        maps.put("describe", getEdGoal().getText().toString());
+        Network.get(this).asyncPost(HttpProtocol.URLS.ADD_PLAN, maps, new Network.JsonCallBack<Pojo_Result>() {
+            @Override
+            public void onSuccess(Pojo_Result pojo_result) {
+                if (pojo_result.code == 0){
+                    ToastUtils.showShortToast(EditPlanActivity.this,R.string.edit_plan_activity_add_succeed);
+                    finish();
+                }else{
+                    ToastUtils.showShortToast(EditPlanActivity.this,R.string.network_error);
+                }
+            }
+
+            @Override
+            public void onFailed(int code, String message, Exception e) {
+                ToastUtils.showShortToast(EditPlanActivity.this,R.string.network_faild);
+            }
+
+            @Override
+            public Class<Pojo_Result> getObjectClass() {
+                return Pojo_Result.class;
+            }
+        });
     }
 
     private void initUi() {
@@ -86,8 +125,7 @@ public class EditPlanActivity extends BaseActivity implements View.OnClickListen
             case R.id.btn_ok:
                 //TODO implement
                 if (isFormatOk()){
-//                    plan.setDescribe(getEdGoal().getText().toString());
-                    finish();
+                    sendAddPlanRequest();
                 }
                 break;
         }

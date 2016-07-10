@@ -83,6 +83,10 @@ public class MockMaker {
             Pojo_Result pojo_result = new Pojo_Result(issucceed?0:1,"");
             return gson.toJson(pojo_result);
         }
+        if (url.equals(HttpProtocol.URLS.ADD_TASK_LIST)){
+            String num = (String) params.get("num");
+            List<Pojo_Task> tasks = (List<Pojo_Task>) params.get("tasks");
+        }
         if (url.equals(HttpProtocol.URLS.REQUEST_CUR_PLAN)){
             String account = (String) params.get("account");
             String plannum = (String) params.get("plannum");

@@ -63,4 +63,9 @@
 
     <string name="login_activity_login_succeed">登录成功</string>
     <string name="login_activity_login_failed">登录失败</string>
+
+    <string name="edit_plan_activity_add_succeed">添加计划成功</string>
+
+    <string name="network_error">请求出错</string>
+    <string name="network_faild">请求失败,请检查是否链接网络</string>
 </resources>

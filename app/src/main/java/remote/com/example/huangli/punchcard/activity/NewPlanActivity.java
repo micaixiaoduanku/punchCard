@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import remote.com.example.huangli.punchcard.R;
+import remote.com.example.huangli.punchcard.pojo.Pojo_Plan;
 
 /**
  * Created by huangli on 16/6/23.
@@ -33,16 +34,19 @@ public class NewPlanActivity extends BaseActivity implements View.OnClickListene
         switch (v.getId()){
             case R.id.layout_btn_week:
                 Intent intent1 = new Intent(this,EditPlanActivity.class);
+                intent1.putExtra("type", Pojo_Plan.TYPE_WEEK);
                 startActivity(intent1);
                 finish();
                 break;
             case R.id.layout_btn_month:
                 Intent intent2 = new Intent(this,EditPlanActivity.class);
+                intent2.putExtra("type", Pojo_Plan.TYPE_MONTH);
                 startActivity(intent2);
                 finish();
                 break;
             case R.id.layout_btn_100days:
                 Intent intent3 = new Intent(this,EditPlanActivity.class);
+                intent3.putExtra("type", Pojo_Plan.TYPE_100_DAYS);
                 startActivity(intent3);
                 finish();
                 break;

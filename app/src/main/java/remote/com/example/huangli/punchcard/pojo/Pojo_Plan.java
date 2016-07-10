@@ -6,6 +6,9 @@ import java.io.Serializable;
  * Created by huangli on 16/6/30.
  */
 public class Pojo_Plan implements Serializable{
+    public final static int TYPE_100_DAYS = 0;
+    public final static int TYPE_MONTH = 1;
+    public final static int TYPE_WEEK = 2;
     public int type;
     public String describe;
     public String num;

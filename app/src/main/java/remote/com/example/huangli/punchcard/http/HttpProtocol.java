@@ -27,6 +27,8 @@ public class HttpProtocol {
         public final static String REQUEST_CUR_PLAN = "http://www.baidu.com/request_poji_cur_plan";
         public final static String REQUEST_PLANS = "http://www.baidu.com/request_poji_plan";
         public final static String ADD_PLAN = "http://www.baidu.com/add_poji_plan";
+        public final static String REQUEST_TASKS = "http://www.baidu.com/request_poji_task";
+        public final static String ADD_TASK_LIST = "http://www.baidu.com/add_poji_task_list";
     }
     //http 返回码
     public static class CODE{
